@@ -21,38 +21,45 @@ class KOParser(object):
 		if os.path.exists(self.map):
 			with open(self.map, 'r') as f:
 				# 将json转成字典
-				ko = []
+				ko_list = []
 				map_dict = json.load(f)
 				maps = json.loads(json.dumps(map_dict['children']))
 				# print(type(maps))
 				for map in maps:
 					# print(type(map['children']))
+					map_name = map['name'][0:5] + '\t' + map['name'][6:]
+					# print(map_name)
 					for map_l_1 in map['children']:
+						map_l_1_name = map_l_1['name'][0:5] + '\t' + map_l_1['name'][6:]
+						# print(map_l_1_name)
 						map_l_2 = json.loads(json.dumps(map_l_1))
 						for pathway in map_l_2['children']:
 							try:
 								for genes in pathway['children']:
-										ko.append(genes['name'])
+									pathway_name = pathway['name'][0:5] + '\t' + pathway['name'][6:]
+									# print(genes['name'])
+									k_num = genes['name'].split(sep='  ')[0]
+									gene_name = genes['name'].split(sep='  ')[1].split(sep=';')[0]
+									anno = genes['name'].split(sep='  ')[1].split(sep=';')[-1]
+									try:
+										pattern = re.compile('(.*)(\[EC:.*\])')
+										product = re.search(pattern, anno).group(1)
+										ec = re.search(pattern, anno).group(2)
+										ko = k_num + '\t' + gene_name + '\t' + product + '\t' + ec
+									except:
+										ko = k_num + '\t' + gene_name + '\t' + anno
+									# print(ko)
+									info = map_name + '\t' + map_l_1_name + '\t' + pathway_name + '\t' + ko
+									ko_list.append(info)
 							except:
 								continue
-				# print(type(ko))
-				return ko
+				return ko_list
 		else:
-			print('Json file does not exist.')
+			print('Error: Json file does not exist.')
 
 	def save_data(self, result, file_name):
-		for genes in result:
-			k_num = genes.split(sep='  ')[0]
-			gene_name = genes.split(sep='  ')[1].split(sep=';')[0]
-			anno = genes.split(sep='  ')[1].split(sep=';')[-1]
-			try:
-				pattern = re.compile('(.*)(\[EC:.*\])')
-				product = re.search(pattern, anno).group(1)
-				ec = re.search(pattern, anno).group(2)
-				ko = k_num + '\t' + gene_name + '\t' + product + '\t' + ec
-			except:
-				ko = k_num + '\t' + gene_name + '\t' + anno
-			kos = ''.join(ko) + '\n'
+		for info in result:
+			kos = ''.join(info) + '\n'
 			with open(file_name, 'a', encoding='utf-8') as f:
 				f.write(kos)
 
