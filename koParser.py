@@ -17,23 +17,23 @@ class KOParser(object):
 		self.map = map
 
 	def json_parser(self):
-		# 判断文件存在
+		# check the existance of json file
 		if os.path.exists(self.map):
 			with open(self.map, 'r') as f:
-				# 将json转成字典
 				ko_list = []
+				# convert json to dict
 				map_dict = json.load(f)
-				maps = json.loads(json.dumps(map_dict['children']))
-				# print(type(maps))
+				# print(type(map_dict)) dict
+				maps = map_dict['children']
+				# print(type(maps)) list
 				for map in maps:
-					# print(type(map['children']))
 					map_name = map['name'][0:5] + '\t' + map['name'][6:]
 					# print(map_name)
+					# print(type(map['children']))
 					for map_l_1 in map['children']:
 						map_l_1_name = map_l_1['name'][0:5] + '\t' + map_l_1['name'][6:]
 						# print(map_l_1_name)
-						map_l_2 = json.loads(json.dumps(map_l_1))
-						for pathway in map_l_2['children']:
+						for pathway in map_l_1['children']:
 							try:
 								for genes in pathway['children']:
 									pathway_name = pathway['name'][0:5] + '\t' + pathway['name'][6:]
@@ -58,6 +58,7 @@ class KOParser(object):
 			print('Error: Json file does not exist.')
 
 	def save_data(self, result, file_name):
+		# convert list to string for writing as file
 		for info in result:
 			kos = ''.join(info) + '\n'
 			with open(file_name, 'a', encoding='utf-8') as f:
