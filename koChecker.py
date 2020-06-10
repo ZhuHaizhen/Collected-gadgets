@@ -25,8 +25,8 @@ def check(q_dir, target):
 
 
 if __name__ == '__main__':
-	q_dir = 'E:/lab/6Dragon_shaped_water_system/LXD/LXD_genome'
+	q_dir = 'E:/lab/6Dragon_shaped_water_system/柳晓东/LXD_genome'
 	os.chdir(q_dir)
-	target = pd.read_csv('E:/lab/6Dragon_shaped_water_system/LXD/ko50.txt', sep='\t')
+	target = pd.read_csv('Y:/dragon_shaped_water/20200502/ko_sel.txt', sep='\t')
 	ko_check = check(q_dir, target)
-	ko_check.to_csv('E:/lab/6Dragon_shaped_water_system/LXD/ko_check.txt', sep='\t', index=False)
+	ko_check.to_csv('E:/lab/6Dragon_shaped_water_system/柳晓东/ko_sel_check.txt', sep='\t', index=False)
