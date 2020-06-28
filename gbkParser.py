@@ -15,7 +15,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', '-i', type=str, help='path of genbank file')
     parser.add_argument('--output', '-o', type=str, help='path of outputs')
-    parser.add_argument('--suffix', type=str, default='gbk', help='suffix of output files')
+    parser.add_argument('--suffix', type=str, default = 'gbk', help='suffix of output files')
     args = parser.parse_args()
 
     cds = os.path.join(args.output, '_'.join([args.suffix, 'cds_list.txt']))
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     for ele in gb_seq.features:
         if ele.type == 'CDS':
             if 'pseudo' in ele.qualifiers.keys():
-                break
+                continue
             else:
                 cds_stat = ele.qualifiers['locus_tag'][0] + '\t' + ele.qualifiers['product'][0] + '\t' + str(ele.location.start) + '\t' + str(ele.location.end) + '\t' + str(ele.location.strand) + '\n'
                 cds_handle.write(cds_stat)
