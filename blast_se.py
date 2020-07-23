@@ -7,6 +7,7 @@
 """
 
 import os
+import argparse
 
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
@@ -17,7 +18,7 @@ from selenium.webdriver.common.by import By
 def setDriver(driver_path):
 	# profile for downloading
 	options = webdriver.ChromeOptions()
-	prefs = {'download.prompt_for_download': False, 'profile.default_content_settings.popups': 0, 'download.default_directory': os.getcwd()}
+	prefs = {'download.prompt_for_download': False, 'profile.default_content_settings.popups': 0}
 	options.add_experimental_option('prefs', prefs)
 
 	# driver = webdriver.Firefox()
@@ -131,6 +132,7 @@ def blastP(driver, seq, db='nr', program='blastp', max_target=10):
 
 
 def downloadData(driver):
+	# wait 60s in total, check every 5s
 	WebDriverWait(driver, 60, 5).until(EC.presence_of_element_located((By.ID, 'ulDnldAl')))
 	driver.find_element_by_id('ulDnldAl').click()
 	driver.find_element_by_css_selector('#allDownload > li:nth-child(2) > a:nth-child(1)').click()
@@ -140,8 +142,19 @@ def downloadData(driver):
 
 
 if __name__ == '__main__':
-	with open('JQ135_mut.fa', 'r') as f:
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--seq', help='Input of query sequence', type=str, required=True)
+	parser.add_argument('--type', help='BlastN or BlastP', type=str, choices=['BlastN', 'BlastP'], required=True)
+	parser.add_argument('--max_target', help='Number of max targets', type=int, choices=[10, 50, 100, 250, 500, 1000, 5000, 10000, 20000])
+	parser.add_argument('--db', help='Database for blast', type=str, choices=['nt', 'rRNA/ITS', 'genomic+transcript', 'betacov', 'nr', 'refseq_protein', 'landmark', 'swissprot', 'pataa', 'pdb', 'env_nr', 'tsa_nr'])
+	parser.add_argument('--sub_db', help='Sub-database for blastN', type=str, choices=['nt', 'refseq_rna', 'refseq_representative_genomes', 'refseq_genomes', 'Whole_Genome_shotgun_contigs', 'est', 'sra', 'tsa_nt', 'htgs', 'patnt', 'pdbnt', 'genomic/9606/RefSeqGene', 'gss', 'sts', 'rRNA_typestrains/prokaryotic_16S_ribosomal_RNA', 'TL/18S_fungal_sequences', 'TL/28S_fungal_sequences', 'rRNA_typestrains/ITS_RefSeq_Fungi', 'Ohc', 'Omc', 'OvirB', 'OvirC'])
+	parser.add_argument('--program', help='BlastP program', type=str, choices=['kmerBlastp', 'balstp', 'psiBlast', 'phiBlast', 'delstBlast'])
+	args = parser.parse_args()
+	with open(args.seq, 'r') as f:
 		fa = f.read()
 	my_driver = setDriver('C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe')
-	blastP(my_driver, fa)
+	if args.type == 'BlastN':
+		blastN(my_driver, fa, args.db, args.sub_db, args.max_target)
+	elif args.type == 'BlastP':
+		blastP(my_driver, fa, args.db, args.program, args.max_target)
 	downloadData(my_driver)
