@@ -6,7 +6,6 @@
 @time: 2020/3/3 22:54
 """
 
-import os
 import argparse
 from Bio import SeqIO
 
@@ -18,17 +17,17 @@ if __name__ == '__main__':
     parser.add_argument('--suffix', type=str, default = 'gbk', help='suffix of output files')
     args = parser.parse_args()
 
-    cds = os.path.join(args.output, '_'.join([args.suffix, 'cds_list.txt']))
+    cds = args.output + '/' + '_'.join([args.suffix, 'cds_list.txt'])
     cds_handle = open(cds, 'w')
-    rRNA = os.path.join(args.output, '_'.join([args.suffix, 'rRNA_list.txt']))
+    rRNA = args.output + '/' + '_'.join([args.suffix, 'rRNA_list.txt'])
     rRNA_handle = open(rRNA, 'w')
-    tRNA = os.path.join(args.output, '_'.join([args.suffix, 'tRNA_list.txt']))
+    tRNA = args.output + '/' + '_'.join([args.suffix, 'tRNA_list.txt'])
     tRNA_handle = open(tRNA, 'w')
-    fna = os.path.join(args.output, '_'.join([args.suffix, 'seq.fna']))
+    fna = args.output +'/' + '_'.join([args.suffix, 'seq.fna'])
     fna_handle = open(fna, 'w')
-    ffn = os.path.join(args.output, '_'.join([args.suffix, 'cds.ffn']))
+    ffn = args.output +'/' + '_'.join([args.suffix, 'cds.ffn'])
     ffn_handle = open(ffn, 'w')
-    faa = os.path.join(args.output, '_'.join([args.suffix, 'cds.faa']))
+    faa = args.output + '/' + '_'.join([args.suffix, 'cds.faa'])
     faa_handle = open(faa, 'w')
 
     gb_seq = SeqIO.read(args.input, 'genbank')
