@@ -40,7 +40,7 @@ class ParseCSV(object):
 		self.csvpath = csvpath
 
 	def readCSV(self):
-		df = pd.read_csv(self.csvpath, names=['query id', 'subject id', 'identities', 'alignment length', 'mismatches', 'gap opens', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bit score', 'positives'], header=0)
+		df = pd.read_csv(self.csvpath, names=['query id', 'subject id', 'identities', 'alignment length', 'mismatches', 'gap opens', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bit score'], header=0)
 		return df
 
 	def mergeRes(self, res, outfile):
@@ -51,7 +51,7 @@ class ParseCSV(object):
 
 
 if __name__ == '__main__':
-	xmlparse = ParseXML('F0YAA561014-Alignment.xml')
+	xmlparse = ParseXML('P37P4R6D016-Alignment.xml')
 	res = xmlparse.getRes('acc_anno.txt')
-	csvparse = ParseCSV('F0YAA561014-Alignment-HitTable.csv')
+	csvparse = ParseCSV('P37P4R6D016-Alignment-HitTable.csv')
 	merged = csvparse.mergeRes(res, 'merged.txt')
